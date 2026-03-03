@@ -1,0 +1,6 @@
+@VentasApi2026_HostAddress = http://localhost:5228
+
+GET {{VentasApi2026_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
