@@ -2,6 +2,7 @@
 using VentasApi2026.Common;
 using VentasApi2026.Data;
 using VentasApi2026.DTOs;
+using VentasApi2026.Exceptions;
 using VentasApi2026.Models;
 using VentasApi2026.Repositories.Interfaces;
 
@@ -18,7 +19,6 @@ namespace VentasApi2026.Repositories
         public async Task<Product> AddAsync(Product product)
         {
             _context.Products.Add(product);
-            await _context.SaveChangesAsync();
             return product;
         }
 
@@ -33,16 +33,17 @@ namespace VentasApi2026.Repositories
                 .Where(p => ids.Contains(p.Id)) // si tienes soft delete
                 .ToListAsync();
         }
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
 
         public async Task<bool> DeleteById(int id)
         {
-            var rowsAffected = await _context.Products.Where(w => w.Id == id).ExecuteDeleteAsync();
+            var product = await _context.Products.FirstOrDefaultAsync(w => w.Id == id);
 
-            return rowsAffected > 0;
+            if (product == null)
+                return false;
+
+            _context.Remove(product);
+
+            return true;
         }
 
         public async Task<PagedResult<Product>> GetPagedAsync(PaginationParams pagination)

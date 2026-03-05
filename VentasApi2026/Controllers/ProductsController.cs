@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VentasApi2026.Common;
@@ -19,6 +20,7 @@ namespace VentasApi2026.Controllers
             this._service = service;
         }
 
+        [Authorize(Policy = "CanCreateProducts")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateProductDto dto) {
 
@@ -30,6 +32,7 @@ namespace VentasApi2026.Controllers
 
         }
 
+        [Authorize(Policy = "CanViewOrder")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -38,14 +41,16 @@ namespace VentasApi2026.Controllers
             return Ok(ApiResponse<ProductDto>.Ok(product));
         }
 
+        [Authorize(Policy = "CanUpdateProducts")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateById(int id, UpdateProductDto data)
+        public async Task<IActionResult> Update(int id, UpdateProductDto data)
         {
             var product = await _service.UpdateProduct(id, data);
 
             return Ok(ApiResponse<ProductDto>.Ok(product));
         }
 
+        [Authorize(Policy = "CanDeleteProduct")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteById(int id)
         {

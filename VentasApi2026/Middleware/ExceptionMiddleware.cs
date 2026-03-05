@@ -67,6 +67,16 @@ namespace VentasApi2026.Middleware
                     message = exception.Message;
                     break;
 
+                case UnauthorizedException:
+                    statusCode = (int)HttpStatusCode.Unauthorized;
+                    message = exception.Message;
+                    break;
+
+                case ForbiddenException:
+                    statusCode = (int)HttpStatusCode.Forbidden;
+                    message = exception.Message;
+                    break;
+
                 default:
                     statusCode = (int)HttpStatusCode.InternalServerError;
                     message = "Internal server error";

@@ -6,7 +6,9 @@ namespace VentasApi2026.Repositories.Interfaces
     public interface IOrderRepository
     {
         Task<Order?> GetByIdAsync(int id);
-        Task SaveChangesAsync();
+        Task<IEnumerable<Order>?> GetMyOrdersAsync(int idUser);
+        Task<IEnumerable<Order>?> GetAllOrders();
+        IQueryable<Order> Query();
         Task AddAsync(Order order);
     }
 }

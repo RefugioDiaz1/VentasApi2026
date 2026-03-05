@@ -10,7 +10,6 @@ namespace VentasApi2026.Repositories.Interfaces
         Task<Product?> GetByIdAsync(int id);
         Task<List<Product>> GetByIdsAsync(List<int> ids);  // ✅ nuevo
         Task<PagedResult<Product>> GetPagedAsync(PaginationParams pagination);
-        Task SaveChangesAsync();
         Task<bool> DeleteById(int id);
     }
 }

@@ -1,8 +1,13 @@
-﻿namespace VentasApi2026.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace VentasApi2026.Models
 {
     public class Product
     {
         public int Id { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         public string Name { get; set; } = null!;
 

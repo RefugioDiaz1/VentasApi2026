@@ -10,24 +10,25 @@ namespace VentasApi2026.Services
 {
     public class ProductService : IProductService
     {
-        private readonly IProductRepository _repository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository repository, IMapper mapper) {
-            this._repository = repository;
+        public ProductService(IUnitOfWork unitOfWork, IMapper mapper) {
+            this._unitOfWork = unitOfWork;
             this._mapper = mapper;
         }
 
         public async Task<ProductDto> CreateAsync(CreateProductDto dto)
         {
             var product = _mapper.Map<Product>(dto);
-            await _repository.AddAsync(product);
+            await _unitOfWork.Products.AddAsync(product);
+            await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<ProductDto>(product);
 
         }
         public async Task<PagedResult<ProductDto>> GetPagedAsync(PaginationParams pagination)
         {
-            var result = await _repository.GetPagedAsync(pagination);
+            var result = await _unitOfWork.Products.GetPagedAsync(pagination);
 
             return new PagedResult<ProductDto>
             {
@@ -40,7 +41,7 @@ namespace VentasApi2026.Services
 
         public async Task<ProductDto> getByIdAsync(int id)
         {
-            var product = await _repository.GetByIdAsync(id);
+            var product = await _unitOfWork.Products.GetByIdAsync(id);
 
             if (product == null)
                 throw new NotFoundException("Product not found");
@@ -51,24 +52,26 @@ namespace VentasApi2026.Services
 
         public async Task<ProductDto> UpdateProduct(int id, UpdateProductDto data)
         {
-            var product = await _repository.GetByIdAsync(id);
+            var product = await _unitOfWork.Products.GetByIdAsync(id);
 
             if (product == null)
                 throw new NotFoundException("Product not found");
 
             _mapper.Map(data, product);
 
-            await _repository.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();
 
             return _mapper.Map<ProductDto>(product);
         }
 
         public async Task<bool> DeleteById(int id)
         {
-            var product = await _repository.DeleteById(id);
+            var product = await _unitOfWork.Products.DeleteById(id);
 
             if (!product)
                 throw new NotFoundException("Product not found");
+
+            await _unitOfWork.SaveChangesAsync();
 
             return product;
         }
